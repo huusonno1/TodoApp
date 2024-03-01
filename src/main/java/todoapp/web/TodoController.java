@@ -89,9 +89,13 @@ public class TodoController extends HttpServlet {
 		
 	}
 
-	private void showEditForm(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
+	private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+		Todo existingTodo = todoDao.selectTodo(id);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("todo/todo-form.jsp");
+		request.setAttribute("todo", existingTodo);
+		dispatcher.forward(request, response);
 	}
 
 	private void insertTodo(HttpServletRequest request, HttpServletResponse response) 

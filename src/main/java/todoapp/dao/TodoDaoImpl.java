@@ -18,6 +18,8 @@ public class TodoDaoImpl implements TodoDao{
 	
 	private static final String SELECT_ALL_TODOS = "select * from todos";
 	
+	private static final String SELECT_TODO_BY_ID = "select id,title,username,description,target_date,is_done from todos where id =?";
+	
 	private static final String DELETE_TODO_BY_ID = "delete from todos where id = ?;";
 	
 	public TodoDaoImpl() {
@@ -49,8 +51,27 @@ public class TodoDaoImpl implements TodoDao{
 
 	@Override
 	public Todo selectTodo(long todoId) {
-		// TODO Auto-generated method stub
-		return null;
+		Todo todo = null;
+		try (Connection connection = JDBCUtils.getConnection();
+						PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TODO_BY_ID)){
+			preparedStatement.setLong(1, todoId);
+			System.out.println(preparedStatement);
+			
+			ResultSet rs = preparedStatement.executeQuery();
+			
+			while(rs.next()) {
+				long id = rs.getLong("id");
+				String title = rs.getString("title");
+				String username = rs.getString("username");
+				String description = rs.getString("description");
+				LocalDate targetDate = rs.getDate("target_date").toLocalDate();
+				boolean isDone = rs.getBoolean("is_done");
+				todo = new Todo(id, title, username, description, targetDate, isDone);
+			}
+		} catch (SQLException e) {
+			JDBCUtils.printSQLException(e);
+		}
+		return todo;
 	}
 
 	@Override
