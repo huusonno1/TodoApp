@@ -22,6 +22,8 @@ public class TodoDaoImpl implements TodoDao{
 	
 	private static final String DELETE_TODO_BY_ID = "delete from todos where id = ?;";
 	
+	private static final String UPDATE_TODO = "update todos set title = ?, username= ?, description =?, target_date =?, is_done = ? where id = ?;";
+	
 	public TodoDaoImpl() {
 		
 	}
@@ -114,8 +116,20 @@ public class TodoDaoImpl implements TodoDao{
 
 	@Override
 	public boolean updateTodo(Todo todo) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean rowUpdate;
+		try (Connection connection = JDBCUtils.getConnection();
+						PreparedStatement statement = connection.prepareStatement(UPDATE_TODO)) {
+			statement.setString(1, todo.getTitle());
+			statement.setString(2, todo.getUsername());
+			statement.setString(3, todo.getDescription());
+			statement.setDate(4, JDBCUtils.getSQLDate(todo.getTargetDate()));
+			statement.setBoolean(5, todo.isStatus());
+			statement.setLong(6, todo.getId());
+			
+			rowUpdate = statement.executeUpdate() > 0;
+			
+		}
+		return rowUpdate;
 	}
 
 }

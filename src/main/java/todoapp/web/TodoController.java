@@ -84,10 +84,6 @@ public class TodoController extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	private void updateTodo(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -122,6 +118,24 @@ public class TodoController extends HttpServlet {
 		response.sendRedirect("list");	
 	}
 
-	
+	private void updateTodo(HttpServletRequest request, HttpServletResponse response) 
+			throws SQLException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+		
+		String title = request.getParameter("title");
+		String username = request.getParameter("username");
+		String description = request.getParameter("description");
+		
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate dateTarget = LocalDate.parse(request.getParameter("targetDate"), df);
+		
+		boolean isDone = Boolean.valueOf(request.getParameter("isDone"));
+		
+		Todo updateTodo = new Todo(id, title, username, description, dateTarget, isDone);
+		
+		todoDao.updateTodo(updateTodo);
+		
+		response.sendRedirect("list");
+	}
 
 }

@@ -12,7 +12,7 @@ public class Todo {
 	public Todo() {
 		
 	}
-	public Todo(Long id, String title, String username, String description, LocalDate targetDate, boolean status) {
+	public Todo(long id, String title, String username, String description, LocalDate targetDate, boolean status) {
 		super();
 		this.id = id;
 		this.title = title;
